@@ -1,0 +1,22 @@
+start = expression
+
+validchar = [0-9a-zA-Z_?+/-=@#$%^&*/.]
+
+atom = chars:validchar+ {
+			return chars.join("");
+		}
+
+space = " "+
+
+comment = " "* ";;" .* { return ""; }
+
+args = space x:args {return x;}
+	   / space x:args+ { return x; }
+	   / expression
+
+expression = atom
+		   / "'" x:expression { return ["quote", x]; }
+		   / "(" x:atom y:args+ ")" comment? {
+		   	 return [x].concat(y);
+		   } 
+    
